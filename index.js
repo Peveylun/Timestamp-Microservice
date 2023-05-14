@@ -24,9 +24,28 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get('/api/', (req, res) => {
+  res.json({ unix: Date.parse(new Date().toUTCString()), utc: new Date().toUTCString() })
+})
+
+app.get('/api/:date', (req, res) => {
+  const dateString = req.params.date
+  const dateStringRegex = /^[0-9]+$/
+  const containNumbers = dateStringRegex.test(dateString)
+
+  if (!containNumbers) {
+
+    Date.parse(dateString)
+      ? res.json({ "unix": Date.parse(dateString), "utc": new Date(Date.parse(dateString)).toUTCString() })
+      : res.json({ error: "Invalid Date" });
+  } else {
+    res.json({ unix: parseInt(dateString), utc: new Date(parseInt(dateString)).toUTCString() })
+  }
+})
+
 
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
+var listener = app.listen(3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
